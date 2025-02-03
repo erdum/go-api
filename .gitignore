@@ -1,0 +1,4 @@
+*.db
+.env
+firebase_credentials.json
+*.log
