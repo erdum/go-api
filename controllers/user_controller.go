@@ -33,13 +33,17 @@ func (uc *UserController) GetUser(context echo.Context) error {
 
 func (uc *UserController) CreateUser(context echo.Context) error {
 	type UserPayload struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		Name  string `json:"name" validate:"required"`
+		Email string `json:"email" validate:"required"`
 	}
 	payload := UserPayload{}
 
 	if err := context.Bind(&payload); err != nil {
-		return context.JSON(http.StatusBadRequest, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if err := context.Validate(payload); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	user := models.User{Name: payload.Name, Email: payload.Email}

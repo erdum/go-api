@@ -3,10 +3,12 @@ package main
 import (
 	"go-api/config"
 	"go-api/controllers"
+	"go-api/middlewares"
 	"go-api/models"
 	"go-api/services/auth"
-	"go-api/validators"
+	"go-api/requests"
 	"go-api/utils"
+	"go-api/validators"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -64,7 +66,11 @@ func main() {
 	app.PUT("/users/:id", userController.UpdateUser)
 	app.DELETE("/users/:id", userController.DeleteUser)
 
-	app.POST("/login", authController.Login)
+	app.POST(
+		"/login",
+		authController.Login,
+		middlewares.Validate(&requests.LoginRequest{}),
+	)
 
 	app.Logger.Fatal(app.Start(":" + appConfig.Port))
 }

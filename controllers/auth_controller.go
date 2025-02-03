@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"go-api/services/auth"
-	"go-api/requests"
 	"net/http"
+	"fmt"
 
 	"github.com/labstack/echo/v4"
 )
@@ -17,20 +17,14 @@ func NewAuthController(authSevice auth.AuthService) *AuthController {
 }
 
 func (ac *AuthController) Login(context echo.Context) error {
-	payload := new(requests.LoginRequest)
+	payload := context.Get("valid_payload")
+	fmt.Println(payload)
 
-	if err := context.Bind(payload); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
+	// data, err := ac.authSevice.AuthenticateWithThirdParty(payload)
+	// if err != nil {
+	// 	return err
+	// }
 
-	if err := context.Validate(payload); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	data, err := ac.authSevice.AuthenticateWithThirdParty(payload.IdToken)
-	if err != nil {
-		return err
-	}
-
-	return context.JSON(http.StatusOK, data)
+	// return context.JSON(http.StatusOK, data)
+	return context.JSON(http.StatusOK, "data")
 }
