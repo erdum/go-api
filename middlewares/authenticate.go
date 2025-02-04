@@ -3,9 +3,7 @@ package middlewares
 import (
 	"go-api/services/auth"
 	"go-api/models"
-	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"strings"
 

@@ -40,7 +40,7 @@ func (ac *AuthController) Login(context echo.Context) error {
 	avatar := userData["avatar"]
 
 	user := models.User{}
-	result := ac.db.Where(models.User{Email: userData["email"]}).Assign(
+	ac.db.Where(models.User{Email: userData["email"]}).Assign(
 		models.User{
 			Name: userData["name"],
 			UID: userData["uid"],
