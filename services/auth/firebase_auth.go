@@ -3,18 +3,15 @@ package auth
 import (
 	"context"
 	"go-api/config"
-	"net/http"
 
 	"gorm.io/gorm"
 	"firebase.google.com/go"
 	"google.golang.org/api/option"
-	"github.com/labstack/echo/v4"
 )
 
 type FirebaseAuthService struct {
 	db *gorm.DB
 	appConfig *config.Config
-
 }
 
 func NewFirebaseAuth(db *gorm.DB) AuthService {
@@ -23,7 +20,7 @@ func NewFirebaseAuth(db *gorm.DB) AuthService {
 
 func (auth *FirebaseAuthService) AuthenticateWithThirdParty(
 	idToken string,
-) (interface{}, error) {
+) (map[string]string, error) {
 	ctx := context.Background()
 	conf := &firebase.Config{
 	    ProjectID: auth.appConfig.Firebase.ProjectId,
@@ -32,18 +29,25 @@ func (auth *FirebaseAuthService) AuthenticateWithThirdParty(
 	app, err := firebase.NewApp(ctx, conf, opt)
 
 	if err != nil {
-	    return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+	    return nil, err
 	}
 	client, err := app.Auth(ctx)
 
 	if err != nil {
-	    return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+	    return nil, err
 	}
 	data, err := client.VerifyIDToken(ctx, idToken)
 
 	if err != nil {
-	    return nil, echo.NewHTTPError(http.StatusInternalServerError, err)
+	    return nil, err
 	}
 
-	return data, nil
+	userData := map[string]string{
+		"email": data.Claims["email"].(string),
+		"uid": data.Claims["user_id"].(string),
+		"name": data.Claims["name"].(string),
+		"avatar": data.Claims["picture"].(string),
+	}
+
+	return userData, nil
 }

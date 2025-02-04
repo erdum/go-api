@@ -27,7 +27,7 @@ var enum = userPreferenceTypes{
 	StrengthTraining:		"strength_training",
 }
 
-func getTypes() userPreferenceTypes {
+func getUserPreferenceTypes() userPreferenceTypes {
 	return enum
 }
 

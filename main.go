@@ -55,22 +55,32 @@ func main() {
 
 	// Services
 	authService := auth.NewFirebaseAuth(db)
+	tokenService := auth.NewJWTService()
 
 	// Inject services into the controllers
-	authController := controllers.NewAuthController(authService)
-	userController := controllers.NewUserController(db)
+	authController := controllers.NewAuthController(
+		authService,
+		tokenService,
+		db,
+	)
+	// userController := controllers.NewUserController(db)
 
-	app.GET("/users", userController.GetAllUsers)
-	app.POST("/users", userController.CreateUser)
-	app.GET("/users/:id", userController.GetUser)
-	app.PUT("/users/:id", userController.UpdateUser)
-	app.DELETE("/users/:id", userController.DeleteUser)
+	// app.GET("/users", userController.GetAllUsers)
+	// app.POST("/users", userController.CreateUser)
+	// app.GET("/users/:id", userController.GetUser)
+	// app.PUT("/users/:id", userController.UpdateUser)
+	// app.DELETE("/users/:id", userController.DeleteUser)
 
 	app.POST(
 		"/login",
 		authController.Login,
 		middlewares.Validate(&requests.LoginRequest{}),
 	)
+
+	// Protected Routes (Require authentication)
+	// protectedRoutes := app.Group("")
+	// protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
+	// protectedRoutes.GET("/profile", authController.GetProfile)
 
 	app.Logger.Fatal(app.Start(":" + appConfig.Port))
 }

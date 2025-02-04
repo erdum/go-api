@@ -6,9 +6,10 @@ import (
 )
 
 type Config struct {
-	Debug    bool   `default:"true"`
-	Port     string `default:"8000"`
-	Url      string `default:"http://localhost"`
+	Secret			string
+	Debug    		bool   `default:"true"`
+	Port     		string `default:"8000"`
+	Url      		string `default:"http://localhost"`
 	Firebase struct {
 		ProjectId   string `split_words:"true"`
 		Credentials string
