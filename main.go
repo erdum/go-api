@@ -17,7 +17,9 @@ import (
 )
 
 func initialMigration() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{
+		SkipDefaultTransaction: true,
+	})
 	if err != nil {
 		return nil, err
 	}
