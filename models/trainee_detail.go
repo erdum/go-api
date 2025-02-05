@@ -4,9 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type FitnessGoal string
-
-type userPreferenceTypes struct {
+type traineePreferences struct {
 	WeightLoss				string
 	StrengthBuilding		string
 	FlexibilityImprovement	string
@@ -18,7 +16,7 @@ type userPreferenceTypes struct {
 	StrengthTraining		string
 }
 
-var enum = userPreferenceTypes{
+var enum = traineePreferences{
 	WeightLoss:				"weight_loss",
 	StrengthBuilding:		"strength_building",
 	FlexibilityImprovement:	"flexibility_improvement",
@@ -27,18 +25,15 @@ var enum = userPreferenceTypes{
 	StrengthTraining:		"strength_training",
 }
 
-func getUserPreferenceTypes() userPreferenceTypes {
+func getTraineePreferenceTypes() traineePreferences {
 	return enum
 }
 
-type UserPreference struct {
+type TraineeDetail struct {
 	gorm.Model
-	City			string
-	Country			string
-	State			string
-	ZipCode			string
-	Address			string
-	FitnessGoal 	[]string `gorm:"serializer:json"`
-	FitnessLevel 	[]string `gorm:"serializer:json"`
-	ActivityChoice	[]string `gorm:"serializer:json"`
+	UserID				uint `gorm:"uniqueIndex;not null"`
+	User				User `gorm:"foreignKey:UserID"`
+	FitnessGoal 		[]string `gorm:"serializer:json;not null"`
+	FitnessLevel 		[]string `gorm:"serializer:json;not null"`
+	ActivityChoice		[]string `gorm:"serializer:json;not null"`
 }

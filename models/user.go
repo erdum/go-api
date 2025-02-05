@@ -19,13 +19,16 @@ const (
 
 type User struct {
 	gorm.Model
-	Name				string `gorm:"index"`
-	Email 				string `gorm:"uniqueIndex:idx_email"`
-	PhoneNumber			string `gorm:"uniqueIndex:idx_phone"`
-	UID  				string
+	Name				string `gorm:"index;not null"`
+	Email 				string `gorm:"uniqueIndex;not null"`
+	PhoneNumber			string `gorm:"uniqueIndex;not null"`
+	UID  				string `gorm:"not null"`
 	Avatar				*string
-	Gender Gender `gorm:'type:ENUM("male","female","other");default:"other"'`
-	Role Role `gorm:'type:ENUM("trainee","coach");default:"trainee"'`
-	UserPreferenceID	uint `gorm:"index:idx_user_preference_id"`
-	Preference 			UserPreference `gorm:"foreignKey:UserPreferenceID"`
+	Gender 				Gender `gorm:'type:ENUM("male","female","other");default:"male"'`
+	Role 				Role `gorm:'type:ENUM("trainee","coach");default:"trainee"'`
+	Address 			UserAddress
+	DeliveryAddresses	[]DeliveryAddress
+	PaymentMethods		[]PaymentMethod
+	Banks				[]Bank
+	AllowNotifications	bool `gorm:"default:false"`
 }

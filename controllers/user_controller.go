@@ -47,7 +47,7 @@ func (uc *UserController) CreateUser(context echo.Context) error {
 	}
 
 	user := models.User{Name: payload.Name, Email: payload.Email}
-	preferences := models.UserPreference{
+	address := models.UserAddress{
 		City: "Karachi",
 		Country: "Pakistan",
 		State: "Sindh",
@@ -56,10 +56,9 @@ func (uc *UserController) CreateUser(context echo.Context) error {
 	}
 
 	uc.db.Create(&user)
-	uc.db.Create(&preferences)
-	user.UserPreferenceID = preferences.ID
-	uc.db.Save(&user)
-	// uc.db.Select("name", "email").Create(&user)
+	uc.db.Create(&address)
+
+	uc.db.Model(&user).Association("Address").Append(&address)
 
 	return context.JSON(http.StatusOK, user)
 }

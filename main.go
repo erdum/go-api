@@ -24,7 +24,22 @@ func initialMigration() (*gorm.DB, error) {
 
 	if err := db.AutoMigrate(
 		&models.User{},
-		&models.UserPreference{},
+		&models.UserAddress{},
+		&models.TraineeDetail{},
+		&models.CoachDetail{},
+		&models.Session{},
+		&models.SessionRequest{},
+		&models.Booking{},
+		&models.Media{},
+		&models.CoachVerificationRequest{},
+		&models.Review{},
+		&models.Product{},
+		&models.Cart{},
+		&models.Order{},
+		&models.DeliveryAddress{},
+		&models.PaymentMethod{},
+		&models.Bank{},
+		&models.Withdrawal{},
 	); err != nil {
 		return nil, err
 	}
