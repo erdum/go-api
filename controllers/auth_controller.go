@@ -3,10 +3,7 @@ package controllers
 import (
 	"go-api/services/auth"
 	"go-api/requests"
-	"go-api/models"
 	"net/http"
-	"reflect"
-	"fmt"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -18,7 +15,7 @@ type AuthController struct {
 	db *gorm.DB
 }
 
-func NewAuthController(
+func New(
 	authService auth.AuthService,
 	tokenService auth.TokenService,
 	db *gorm.DB,
@@ -30,35 +27,35 @@ func NewAuthController(
 	}
 }
 
-func (ac *AuthController) Login(context echo.Context) error {
-	payload := context.Get("valid_payload").(*requests.LoginRequest)
+func (ac *AuthController) Register(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.RegisterRequest)
 
-	userData, err := ac.authService.AuthenticateWithThirdParty(payload.IdToken)
+	response, err := ac.authService.Register(payload)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-	avatar := userData["avatar"]
-
-	user := models.User{}
-	ac.db.Where(models.User{Email: userData["email"]}).Assign(
-		models.User{
-			Name: userData["name"],
-			UID: userData["uid"],
-			Avatar: &avatar,
-		},
-	).FirstOrCreate(&user)
-
-	token, err := ac.tokenService.GenerateToken(
-		user.ID,
-		fmt.Sprintf("%T", reflect.TypeOf(user)),
-	)
-
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return err
 	}
 
-	return context.JSON(
-		http.StatusOK,
-		map[string]interface{}{"token": token, "user": user},
-	)
+	return c.JSON(http.StatusOK, response)
+}
+
+func (ac *AuthController) Login(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.LoginRequest)
+
+	response, err := ac.authService.Login(payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
+func (ac *AuthController) SignOn(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.SignOnRequest)
+
+	response, err := ac.authService.SignOn(payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
 }

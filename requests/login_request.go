@@ -1,5 +1,6 @@
 package requests
 
 type LoginRequest struct {
-	IdToken string `json:"idToken" form:"idToken" validate:"required"`
+	Email		string `json:"email" validate:"required,email"`
+	Password	string `json:"password" validate:"required"`
 }

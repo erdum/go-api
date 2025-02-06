@@ -71,11 +71,11 @@ func main() {
 	}
 
 	// Services
-	authService := auth.NewFirebaseAuth(db)
-	tokenService := auth.NewJWTService()
+	tokenService := auth.NewJWTToken()
+	authService := auth.NewFirebaseAuth(db, tokenService)
 
 	// Inject services into the controllers
-	authController := controllers.NewAuthController(
+	authController := controllers.New(
 		authService,
 		tokenService,
 		db,
@@ -89,9 +89,21 @@ func main() {
 	// app.DELETE("/users/:id", userController.DeleteUser)
 
 	app.POST(
+		"/register",
+		authController.Register,
+		middlewares.Validate(&requests.RegisterRequest{}),
+	)
+
+	app.POST(
 		"/login",
 		authController.Login,
 		middlewares.Validate(&requests.LoginRequest{}),
+	)
+
+	app.POST(
+		"/sign-on",
+		authController.SignOn,
+		middlewares.Validate(&requests.SignOnRequest{}),
 	)
 
 	// Protected Routes (Require authentication)
