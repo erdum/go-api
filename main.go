@@ -52,6 +52,7 @@ func initialMigration() (*gorm.DB, error) {
 func main() {
 	app := echo.New()
 	app.Use(middleware.RequestID())
+	app.Use(middleware.Cache())
 	app.Validator = validators.NewDefaultValidator()
 
 	appConfig, err := config.LoadConfig()
