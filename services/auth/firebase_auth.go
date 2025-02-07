@@ -4,9 +4,11 @@ import (
 	"go-api/requests"
 	"go-api/config"
 	"go-api/models"
+	"go-api/utils"
 	"net/http"
 	"context"
 	"reflect"
+	"errors"
 	"fmt"
 
 	"github.com/labstack/echo/v4"
@@ -32,14 +34,52 @@ func NewFirebaseAuth(
 	}
 }
 
-func (auth *FirebaseAuthService) Register(*requests.RegisterRequest) (
+func (auth *FirebaseAuthService) Register(
+	c echo.Context,
+	payload *requests.RegisterRequest,
+) (
 	map[string]string,
 	error,
 ) {
-	return nil, nil
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if result.RowsAffected > 0 {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			errors.New("Email already exists."),
+		)
+	}
+
+	user.Name = payload.Name
+	user.Email = payload.Email
+	user.PhoneNumber = payload.PhoneNumber
+	user.Password, _ = utils.HashPassword(payload.Password)
+	result = auth.db.Create(&user)
+
+	if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			errors.New("Phone Number already in use."),
+		)
+	}
+
+	// Send OTP
+	err := utils.SendOTP(c, "erdum", "1234", func (value string) {
+		fmt.Println("Email Sent.")
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]string{"message": "User successfully registered."}, nil
 }
 
-func (auth *FirebaseAuthService) Login(*requests.LoginRequest) (
+func (auth *FirebaseAuthService) Login(
+	c echo.Context,
+	payload *requests.LoginRequest,
+) (
 	map[string]string,
 	error,
 ) {
@@ -47,6 +87,7 @@ func (auth *FirebaseAuthService) Login(*requests.LoginRequest) (
 }
 
 func (auth *FirebaseAuthService) SignOn(
+	c echo.Context,
 	payload *requests.SignOnRequest,
 ) (map[string]string, error) {
 	ctx := context.Background()

@@ -1,11 +1,15 @@
 package auth
 
-import "go-api/requests"
+import (
+	"go-api/requests"
+
+	"github.com/labstack/echo/v4"
+)
 
 type AuthService interface {
-	Register(*requests.RegisterRequest) (map[string]string, error)
-	Login(*requests.LoginRequest) (map[string]string, error)
-	SignOn(*requests.SignOnRequest) (
+	Register(echo.Context, *requests.RegisterRequest) (map[string]string, error)
+	Login(echo.Context, *requests.LoginRequest) (map[string]string, error)
+	SignOn(echo.Context, *requests.SignOnRequest) (
 		map[string]string,
 		error,
 	)

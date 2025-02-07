@@ -30,7 +30,7 @@ func New(
 func (ac *AuthController) Register(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.RegisterRequest)
 
-	response, err := ac.authService.Register(payload)
+	response, err := ac.authService.Register(c, payload)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func (ac *AuthController) Register(c echo.Context) error {
 func (ac *AuthController) Login(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.LoginRequest)
 
-	response, err := ac.authService.Login(payload)
+	response, err := ac.authService.Login(c, payload)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (ac *AuthController) Login(c echo.Context) error {
 func (ac *AuthController) SignOn(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.SignOnRequest)
 
-	response, err := ac.authService.SignOn(payload)
+	response, err := ac.authService.SignOn(c, payload)
 	if err != nil {
 		return err
 	}

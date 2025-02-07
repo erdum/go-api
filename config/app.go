@@ -14,6 +14,11 @@ type Config struct {
 		ProjectId   string `split_words:"true"`
 		Credentials string
 	}
+	Otp struct {
+		ExpirySecs	uint `default:"20" split_words:"true"`
+		RetrySecs	uint `default:"300" split_words:"true"`
+		Retries		uint `default:"3" split_words:"true"`
+	}
 }
 
 var appConfig = &Config{}

@@ -19,6 +19,7 @@ import (
 func initialMigration() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{
 		SkipDefaultTransaction: true,
+		TranslateError: true,
 	})
 	if err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func initialMigration() (*gorm.DB, error) {
 func main() {
 	app := echo.New()
 	app.Use(middleware.RequestID())
-	app.Use(middleware.Cache())
+	app.Use(middlewares.Cache())
 	app.Validator = validators.NewDefaultValidator()
 
 	appConfig, err := config.LoadConfig()
