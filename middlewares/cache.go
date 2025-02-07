@@ -5,11 +5,17 @@ import (
 	"github.com/coocood/freecache"
 )
 
+var globalCache *freecache.Cache
+
 func Cache() echo.MiddlewareFunc {
+
+	if globalCache == nil {
+		globalCache = freecache.NewCache(1024 * 1024 * 10) // 10Mb allocated
+	}
+
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cache := freecache.NewCache(1024 * 1024 * 10) // 10Mb allocated
-			c.Set("cache", cache)
+			c.Set("cache", globalCache)
 
 			return next(c)
 		}
