@@ -51,6 +51,7 @@ func (auth *FirebaseAuthService) Register(
 		)
 	}
 
+	user.UID = utils.GenerateHexUUID()
 	user.Name = payload.Name
 	user.Email = payload.Email
 	user.PhoneNumber = payload.PhoneNumber
@@ -71,7 +72,7 @@ func (auth *FirebaseAuthService) Register(
 		utils.GenerateOTP(),
 		func (value string) {
 			fmt.Println("Email Sent.", value)
-			utils.SendMail([]byte("Allah u Akbar"), []string{"erdumadnan@gmail.com"})
+			utils.SendMail([]byte(value), []string{user.Email})
 		},
 	)
 
