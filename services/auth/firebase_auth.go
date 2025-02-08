@@ -44,25 +44,34 @@ func (auth *FirebaseAuthService) Register(
 	user := models.User{}
 	result := auth.db.Where("email = ?", payload.Email).First(&user)
 
-	if result.RowsAffected > 0 {
+	if user.EmailVerifiedAt != nil {
 		return nil, echo.NewHTTPError(
 			http.StatusBadRequest,
 			errors.New("Email already exists."),
 		)
 	}
 
-	user.UID = utils.GenerateHexUUID()
-	user.Name = payload.Name
-	user.Email = payload.Email
-	user.PhoneNumber = payload.PhoneNumber
-	user.Password, _ = utils.HashPassword(payload.Password)
-	result = auth.db.Create(&user)
+	if result.RowsAffected > 0 {
+		user.UID = utils.GenerateHexUUID()
+		user.Name = payload.Name
+		user.Email = payload.Email
+		user.PhoneNumber = payload.PhoneNumber
+		user.Password, _ = utils.HashPassword(payload.Password)
+		auth.db.Save(&user)
+	} else {
+		user.UID = utils.GenerateHexUUID()
+		user.Name = payload.Name
+		user.Email = payload.Email
+		user.PhoneNumber = payload.PhoneNumber
+		user.Password, _ = utils.HashPassword(payload.Password)
+		result = auth.db.Create(&user)
 
-	if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-		return nil, echo.NewHTTPError(
-			http.StatusBadRequest,
-			errors.New("Phone Number already in use."),
-		)
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			return nil, echo.NewHTTPError(
+				http.StatusBadRequest,
+				errors.New("Phone Number already in use."),
+			)
+		}
 	}
 
 	// Send OTP
