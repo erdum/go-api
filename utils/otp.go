@@ -99,6 +99,7 @@ func SendOTP(
 
 	otp.Retries += 1
 	otp.ExpiresAt = time.Now().Add(time.Second * time.Duration(expirySecs))
+	otp.VerifiedAt = nil
 
 	otp_string, _ = json.Marshal(otp)
 	if err := cache.Set(key, otp_string, int(retrySecs)); err != nil {
