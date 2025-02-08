@@ -68,14 +68,15 @@ func SendOTP(
 		)
 	}
 
-	otp_sent_at := otp.ExpiresAt.Sub(time.Now())
-	otp_cool_down_diff := int(time.Now().Add(time.Second * time.Duration(retrySecs)) )
 	otp_expiration_diff := int(otp.ExpiresAt.Sub(time.Now()).Seconds())
 
 	if otp.Retries >= retries {
+		cool_down_time := otp.ExpiresAt.Add(-time.Second * time.Duration(expirySecs)).Add(time.Second * time.Duration(retrySecs))
+		otp_cool_down_diff := int(cool_down_time.Sub(time.Now()).Seconds())
+
 		error_string := fmt.Sprintf(
 			"Too many OTP's requested, try again after: %d",
-			,
+			otp_cool_down_diff,
 		)
 
 		return echo.NewHTTPError(
@@ -85,9 +86,14 @@ func SendOTP(
 	}
 
 	if otp_expiration_diff > 0 {
-		error_string = fmt.Sprintf(
+		error_string := fmt.Sprintf(
 			"Recently OTP requested, try again after: %d",
 			otp_expiration_diff,
+		)
+
+		return echo.NewHTTPError(
+			http.StatusBadRequest,
+			error_string,
 		)
 	}
 
