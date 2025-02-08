@@ -65,9 +65,15 @@ func (auth *FirebaseAuthService) Register(
 	}
 
 	// Send OTP
-	err := utils.SendOTP(c, "erdum", "1234", func (value string) {
-		fmt.Println("Email Sent.")
-	})
+	err := utils.SendOTP(
+		c,
+		user.Email,
+		utils.GenerateOTP(),
+		func (value string) {
+			fmt.Println("Email Sent.", value)
+			utils.SendMail([]byte("Allah u Akbar"), []string{"erdumadnan@gmail.com"})
+		},
+	)
 
 	if err != nil {
 		return nil, err

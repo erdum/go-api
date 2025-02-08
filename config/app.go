@@ -19,6 +19,13 @@ type Config struct {
 		RetrySecs	uint `default:"300" split_words:"true"`
 		Retries		uint `default:"3" split_words:"true"`
 	}
+	Mail struct {
+		Host		string
+		Port		string `default:"465"`
+		User		string
+		Pass		string
+		From		string
+	}
 }
 
 var appConfig = &Config{}
