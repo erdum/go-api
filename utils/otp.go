@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"go-api/config"
+	"math/rand"
 	"net/http"
 	"time"
 	"fmt"
@@ -123,4 +124,10 @@ func SendOTP(
 
 func VerifyOTP(c echo.Context, value string) (bool, error) {
 	return false, nil
+}
+
+func GenerateOTP() string {
+	rand.Seed(time.Now().UnixNano())
+	otp := rand.Intn(900000) + 100000
+	return fmt.Sprintf("%06d", otp)
 }
