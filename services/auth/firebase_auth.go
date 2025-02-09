@@ -94,6 +94,9 @@ func (auth *FirebaseAuthService) Register(
 	return map[string]string{"message": "User successfully registered."}, nil
 }
 
+func (auth *FirebaseAuthService) VerifyEmail() {
+}
+
 func (auth *FirebaseAuthService) Login(
 	c echo.Context,
 	payload *requests.LoginRequest,
