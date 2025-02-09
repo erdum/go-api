@@ -55,7 +55,7 @@ func SendOTP(
 			)
 		}
 
-		callback(otp_value)
+		go callback(otp_value)
 
 		return nil
 	}
@@ -117,7 +117,7 @@ func SendOTP(
 		)
 	}
 
-	callback(otp_value)
+	go callback(otp_value)
 
 	return nil
 }
