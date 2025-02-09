@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	Name			string `default:"GO-API"`
 	Secret			string
 	Debug    		bool   `default:"true"`
 	Port     		string `default:"8000"`

@@ -81,7 +81,9 @@ func (auth *FirebaseAuthService) Register(
 		utils.GenerateOTP(),
 		func (value string) {
 			fmt.Println("Email Sent.", value)
-			utils.SendMail([]byte(value), []string{user.Email})
+			subject := "OTP | "+auth.appConfig.Name
+			content := "Hello "+user.Name+",\n\nHere is your verification code:\n\n"+value+"\n\nPlease use this code to complete your action.\n\nThank you,\n"+auth.appConfig.Name
+			utils.SendMail(subject, content, []string{user.Email})
 		},
 	)
 
