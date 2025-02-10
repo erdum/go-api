@@ -191,6 +191,38 @@ func (auth *FirebaseAuthService) SignOn(
 	return map[string]string{"token": token}, nil
 }
 
+func (auth *FirebaseAuthService) ForgetPassword(
+	c echo.Context,
+	payload *requests.UpdatePasswordRequest,
+) (map[string]string, error) {
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			http.StatusNotFound,
+			errors.New("User not found with the specified email."),
+		)
+	}
+
+	now := time.Now()
+	user.PasswordResetRequested = &now
+	auth.db.Save(&user)
+
+	_, err := auth.ResendOtp(
+		c,
+		&requests.ResendOtpRequest{Email: payload.Email},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]string{
+		"message": "Forget password successfully requested.",
+	}, nil
+}
+
 func (auth *FirebaseAuthService) ResendOtp(
 	c echo.Context,
 	payload *requests.ResendOtpRequest,

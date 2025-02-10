@@ -30,6 +30,7 @@ type User struct {
 	UID  					string `gorm:"not null"`
 	EmailVerifiedAt			*time.Time
 	PhoneNumberVerifiedAt	*time.Time
+	PasswordResetRequested	*time.Time
 	Avatar					*string
 	Gender 					Gender `gorm:'type:ENUM("male","female","other");default:"male"'`
 	Role 					Role `gorm:'type:ENUM("trainee","coach");default:"trainee"'`

@@ -61,17 +61,14 @@ func (ac *AuthController) SignOn(c echo.Context) error {
 }
 
 func (ac *AuthController) ForgetPassword(c echo.Context) error {
-	payload := c.Get("valid_payload").(*requests.ResendOtpRequest)
+	payload := c.Get("valid_payload").(*requests.UpdatePasswordRequest)
 
-	_, err := ac.authService.ResendOtp(c, payload)
+	response, err := ac.authService.ForgetPassword(c, payload)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(
-		http.StatusOK,
-		map[string]string{"message": "Forget password successfully requested."},
-	)
+	return c.JSON(http.StatusOK, response)
 }
 
 func (ac *AuthController) ResendOtp(c echo.Context) error {
