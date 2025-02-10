@@ -130,7 +130,43 @@ func (auth *FirebaseAuthService) Login(
 	map[string]string,
 	error,
 ) {
-	return nil, nil
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			// http.StatusNotFound,
+			http.StatusBadRequest,
+			// errors.New("User not found with the specified email."),
+			errors.New("Invalid credentials."),
+		)
+	}
+
+	if !utils.VerifyPassword(payload.Password, user.Password) {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			// errors.New("Invalid password."),
+			errors.New("Invalid credentials."),
+		)
+	}
+
+	if user.EmailVerifiedAt == nil {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			errors.New("Account email not verified."),
+		)
+	}
+
+	var userAvatar string
+	if user.Avatar != nil {
+	    userAvatar = *user.Avatar
+	}
+
+	return map[string]string{
+		"uid": user.UID,
+		"name": user.Name,
+		"avatar": userAvatar,
+	}, nil
 }
 
 func (auth *FirebaseAuthService) SignOn(
