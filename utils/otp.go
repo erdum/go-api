@@ -5,6 +5,7 @@ import (
 	"go-api/config"
 	"math/rand"
 	"net/http"
+	"errors"
 	"time"
 	"fmt"
 
@@ -122,8 +123,56 @@ func SendOTP(
 	return nil
 }
 
-func VerifyOTP(c echo.Context, value string) (bool, error) {
-	return false, nil
+func VerifyOTP(c echo.Context, value string) (*string, error) {
+	cache := c.Get("cache").(*freecache.Cache)
+	identifier, _ := cache.Get([]byte(value))
+
+	if len(identifier) > 0 {
+		otp_string, _ := cache.Get(identifier)
+		if len(otp_string) > 0 {
+			otp := Otp{}
+			err := json.Unmarshal(otp_string, &otp)
+			if err != nil {
+				return nil, echo.NewHTTPError(
+					http.StatusInternalServerError,
+					err,
+				)
+			}
+
+			if otp.ExpiresAt.Before(time.Now()) {
+				return nil, echo.NewHTTPError(
+					http.StatusBadRequest,
+					errors.New("Invalid or expired OTP."),
+				)
+			}
+
+			now := time.Now()
+			otp.VerifiedAt = &now
+			otp.Retries = 0
+
+			retrySecs := config.GetConfig().Otp.RetrySecs
+
+			otp_string, _ = json.Marshal(otp)
+			if err := cache.Set(
+				identifier,
+				otp_string,
+				int(retrySecs),
+			); err != nil {
+				return nil, echo.NewHTTPError(
+					http.StatusInternalServerError,
+					err,
+				)
+			}
+			identifier_string := string(identifier)
+
+			return &identifier_string, nil
+		}
+	}
+
+	return nil, echo.NewHTTPError(
+		http.StatusBadRequest,
+		errors.New("Invalid or expired OTP."),
+	)
 }
 
 func GenerateOTP() string {
