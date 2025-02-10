@@ -109,6 +109,13 @@ func (auth *FirebaseAuthService) VerifyEmail(
 		)
 	}
 
+	if user.EmailVerifiedAt != nil {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			errors.New("User email is already verified."),
+		)
+	}
+
 	ident, err := utils.VerifyOTP(c, payload.Otp)
 	if err != nil {
 		return nil, err
