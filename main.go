@@ -120,6 +120,12 @@ func main() {
 		middlewares.Validate(&requests.ResendOtpRequest{}),
 	)
 
+	app.POST(
+		"/forget-password",
+		authController.ForgetPassword,
+		middlewares.Validate(&requests.ResendOtpRequest{}),
+	)
+
 	// Protected Routes (Require authentication)
 	// protectedRoutes := app.Group("")
 	// protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
