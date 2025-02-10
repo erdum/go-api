@@ -38,10 +38,7 @@ func NewFirebaseAuth(
 func (auth *FirebaseAuthService) Register(
 	c echo.Context,
 	payload *requests.RegisterRequest,
-) (
-	map[string]string,
-	error,
-) {
+) (map[string]string, error) {
 	user := models.User{}
 	result := auth.db.Where("email = ?", payload.Email).First(&user)
 
@@ -167,10 +164,7 @@ func (auth *FirebaseAuthService) ResendOtp(
 func (auth *FirebaseAuthService) Login(
 	c echo.Context,
 	payload *requests.LoginRequest,
-) (
-	map[string]string,
-	error,
-) {
+) (map[string]string, error) {
 	user := models.User{}
 	result := auth.db.Where("email = ?", payload.Email).First(&user)
 
