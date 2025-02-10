@@ -109,9 +109,9 @@ func main() {
 	)
 
 	app.POST(
-		"/verify-email",
-		authController.VerifyEmail,
-		middlewares.Validate(&requests.VerifyEmailRequest{}),
+		"/forget-password",
+		authController.ForgetPassword,
+		middlewares.Validate(&requests.ResendOtpRequest{}),
 	)
 
 	app.POST(
@@ -121,9 +121,9 @@ func main() {
 	)
 
 	app.POST(
-		"/forget-password",
-		authController.ForgetPassword,
-		middlewares.Validate(&requests.ResendOtpRequest{}),
+		"/verify-otp",
+		authController.VerifyOtp,
+		middlewares.Validate(&requests.VerifyOtpRequest{}),
 	)
 
 	// Protected Routes (Require authentication)

@@ -123,7 +123,7 @@ func SendOTP(
 	return nil
 }
 
-func VerifyOTP(c echo.Context, value string) (*string, error) {
+func VerifyOTP(c echo.Context, value string, clear bool) (*string, error) {
 	cache := c.Get("cache").(*freecache.Cache)
 	identifier, _ := cache.Get([]byte(value))
 
@@ -164,6 +164,10 @@ func VerifyOTP(c echo.Context, value string) (*string, error) {
 				)
 			}
 			identifier_string := string(identifier)
+
+			if clear {
+				cache.Clear()
+			}
 
 			return &identifier_string, nil
 		}

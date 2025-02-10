@@ -8,7 +8,8 @@ import (
 
 type AuthService interface {
 	Register(echo.Context, *requests.RegisterRequest) (map[string]string, error)
-	VerifyEmail(echo.Context, *requests.VerifyEmailRequest) (
+	Login(echo.Context, *requests.LoginRequest) (map[string]string, error)
+	SignOn(echo.Context, *requests.SignOnRequest) (
 		map[string]string,
 		error,
 	)
@@ -16,8 +17,7 @@ type AuthService interface {
 		map[string]string,
 		error,
 	)
-	Login(echo.Context, *requests.LoginRequest) (map[string]string, error)
-	SignOn(echo.Context, *requests.SignOnRequest) (
+	VerifyOtp(echo.Context, *requests.VerifyOtpRequest) (
 		map[string]string,
 		error,
 	)
