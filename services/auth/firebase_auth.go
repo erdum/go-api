@@ -9,6 +9,7 @@ import (
 	"context"
 	"reflect"
 	"errors"
+	"time"
 	"fmt"
 
 	"github.com/labstack/echo/v4"
@@ -94,7 +95,32 @@ func (auth *FirebaseAuthService) Register(
 	return map[string]string{"message": "User successfully registered."}, nil
 }
 
-func (auth *FirebaseAuthService) VerifyEmail() {
+func (auth *FirebaseAuthService) VerifyEmail(
+	c echo.Context,
+	payload *requests.VerifyEmailRequest,
+) (map[string]string, error) {
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			http.StatusNotFound,
+			errors.New("User not found with the specified email."),
+		)
+	}
+
+	ident, err := utils.VerifyOTP(c, payload.Otp)
+	if err != nil {
+		return nil, err
+	}
+
+	if ident != nil {
+		now := time.Now()
+		user.EmailVerifiedAt = &now
+		auth.db.Save(&user)
+	}
+
+	return map[string]string{"message": "User email successfully verified."}, nil
 }
 
 func (auth *FirebaseAuthService) Login(

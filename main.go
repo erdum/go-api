@@ -108,6 +108,12 @@ func main() {
 		middlewares.Validate(&requests.SignOnRequest{}),
 	)
 
+	app.POST(
+		"/verify-email",
+		authController.VerifyEmail,
+		middlewares.Validate(&requests.VerifyEmailRequest{}),
+	)
+
 	// Protected Routes (Require authentication)
 	// protectedRoutes := app.Group("")
 	// protectedRoutes.Use(middlewares.Authenticate(tokenService, db))

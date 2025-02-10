@@ -38,6 +38,17 @@ func (ac *AuthController) Register(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+func (ac *AuthController) VerifyEmail(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.VerifyEmailRequest)
+
+	response, err := ac.authService.VerifyEmail(c, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func (ac *AuthController) Login(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.LoginRequest)
 
