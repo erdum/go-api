@@ -193,7 +193,7 @@ func (auth *FirebaseAuthService) SignOn(
 
 func (auth *FirebaseAuthService) ForgetPassword(
 	c echo.Context,
-	payload *requests.UpdatePasswordRequest,
+	payload *requests.ResendOtpRequest,
 ) (map[string]string, error) {
 	user := models.User{}
 	result := auth.db.Where("email = ?", payload.Email).First(&user)
@@ -209,10 +209,7 @@ func (auth *FirebaseAuthService) ForgetPassword(
 	user.PasswordResetRequested = &now
 	auth.db.Save(&user)
 
-	_, err := auth.ResendOtp(
-		c,
-		&requests.ResendOtpRequest{Email: payload.Email},
-	)
+	_, err := auth.ResendOtp(c, payload)
 
 	if err != nil {
 		return nil, err

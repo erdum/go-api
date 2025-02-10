@@ -61,7 +61,7 @@ func (ac *AuthController) SignOn(c echo.Context) error {
 }
 
 func (ac *AuthController) ForgetPassword(c echo.Context) error {
-	payload := c.Get("valid_payload").(*requests.UpdatePasswordRequest)
+	payload := c.Get("valid_payload").(*requests.ResendOtpRequest)
 
 	response, err := ac.authService.ForgetPassword(c, payload)
 	if err != nil {

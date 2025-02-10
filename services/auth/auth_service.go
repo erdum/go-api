@@ -13,7 +13,7 @@ type AuthService interface {
 		map[string]string,
 		error,
 	)
-	ForgetPassword(echo.Context, *requests.UpdatePasswordRequest) (
+	ForgetPassword(echo.Context, *requests.ResendOtpRequest) (
 		map[string]string,
 		error,
 	)
