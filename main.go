@@ -114,6 +114,12 @@ func main() {
 		middlewares.Validate(&requests.VerifyEmailRequest{}),
 	)
 
+	app.POST(
+		"/resend-otp",
+		authController.ResendOtp,
+		middlewares.Validate(&requests.ResendOtpRequest{}),
+	)
+
 	// Protected Routes (Require authentication)
 	// protectedRoutes := app.Group("")
 	// protectedRoutes.Use(middlewares.Authenticate(tokenService, db))

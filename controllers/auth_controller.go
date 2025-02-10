@@ -49,6 +49,17 @@ func (ac *AuthController) VerifyEmail(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+func (ac *AuthController) ResendOtp(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.ResendOtpRequest)
+
+	response, err := ac.authService.ResendOtp(c, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func (ac *AuthController) Login(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.LoginRequest)
 

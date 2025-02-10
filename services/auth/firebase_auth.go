@@ -123,6 +123,40 @@ func (auth *FirebaseAuthService) VerifyEmail(
 	return map[string]string{"message": "User email successfully verified."}, nil
 }
 
+func (auth *FirebaseAuthService) ResendOtp(
+	c echo.Context,
+	payload *requests.ResendOtpRequest,
+) (map[string]string, error) {
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			http.StatusNotFound,
+			errors.New("User not found with the specified email."),
+		)
+	}
+
+	// Send OTP
+	err := utils.SendOTP(
+		c,
+		user.Email,
+		utils.GenerateOTP(),
+		func (value string) {
+			fmt.Println("Email Sent.", value)
+			subject := "OTP | "+auth.appConfig.Name
+			content := "Hello "+user.Name+",\n\nHere is your verification code:\n\n"+value+"\n\nPlease use this code to complete your action.\n\nThank you,\n"+auth.appConfig.Name
+			utils.SendMail(subject, content, []string{user.Email})
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]string{"message": "OTP successfully resent."}, nil
+}
+
 func (auth *FirebaseAuthService) Login(
 	c echo.Context,
 	payload *requests.LoginRequest,

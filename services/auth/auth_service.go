@@ -12,6 +12,10 @@ type AuthService interface {
 		echo.Context,
 		*requests.VerifyEmailRequest,
 	) (map[string]string, error)
+	ResendOtp(
+		echo.Context,
+		*requests.ResendOtpRequest,
+	) (map[string]string, error)
 	Login(echo.Context, *requests.LoginRequest) (map[string]string, error)
 	SignOn(echo.Context, *requests.SignOnRequest) (
 		map[string]string,
