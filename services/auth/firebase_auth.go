@@ -128,6 +128,17 @@ func (auth *FirebaseAuthService) Login(
 		auth.db.Save(&user)
 	}
 
+	token, err := auth.tokenService.GenerateToken(
+		Token{
+			EntityID: user.ID,
+			EntityType: fmt.Sprintf("%T", reflect.TypeOf(user)),
+		},
+	)
+
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
 	var userAvatar string
 	if user.Avatar != nil {
 	    userAvatar = *user.Avatar
@@ -137,6 +148,7 @@ func (auth *FirebaseAuthService) Login(
 		"uid": user.UID,
 		"name": user.Name,
 		"avatar": userAvatar,
+		"token": token,
 	}, nil
 }
 
