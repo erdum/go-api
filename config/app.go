@@ -6,26 +6,27 @@ import (
 )
 
 type Config struct {
-	Name			string `default:"GO-API"`
-	Secret			string
-	Debug    		bool   `default:"true"`
-	Port     		string `default:"8000"`
-	Url      		string `default:"http://localhost"`
+	Name						string `default:"GO-API"`
+	Secret						string
+	Debug    					bool   `default:"true"`
+	Port     					string `default:"8000"`
+	Url      					string `default:"http://localhost"`
 	Firebase struct {
-		ProjectId   string `split_words:"true"`
-		Credentials string
+		ProjectId   			string `split_words:"true"`
+		Credentials 			string
 	}
+	PasswordResetExpirySecs		uint `default:"300" split_words:"true"`
 	Otp struct {
-		ExpirySecs	uint `default:"20" split_words:"true"`
-		RetrySecs	uint `default:"300" split_words:"true"`
-		Retries		uint `default:"3" split_words:"true"`
+		ExpirySecs				uint `default:"20" split_words:"true"`
+		RetrySecs				uint `default:"300" split_words:"true"`
+		Retries					uint `default:"3" split_words:"true"`
 	}
 	Mail struct {
-		Host		string
-		Port		string `default:"465"`
-		User		string
-		Pass		string
-		From		string
+		Host					string
+		Port					string `default:"465"`
+		User					string
+		Pass					string
+		From					string
 	}
 }
 

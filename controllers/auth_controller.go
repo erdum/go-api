@@ -71,6 +71,17 @@ func (ac *AuthController) ForgetPassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, response)
 }
 
+func (ac *AuthController) UpdatePassword(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.UpdatePasswordRequest)
+
+	response, err := ac.authService.UpdatePassword(c, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func (ac *AuthController) ResendOtp(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.ResendOtpRequest)
 

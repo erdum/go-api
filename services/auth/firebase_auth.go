@@ -220,6 +220,43 @@ func (auth *FirebaseAuthService) ForgetPassword(
 	}, nil
 }
 
+func (auth *FirebaseAuthService) UpdatePassword(
+	c echo.Context,
+	payload *requests.UpdatePasswordRequest,
+) (map[string]string, error) {
+	user := models.User{}
+	result := auth.db.Where("email = ?", payload.Email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			http.StatusNotFound,
+			errors.New("User not found with the specified email."),
+		)
+	}
+
+	var passwordResetRequested time.Time = time.Now()
+	if user.PasswordResetRequested != nil {
+		passwordResetRequested = *user.PasswordResetRequested
+	}
+
+	if passwordResetRequested.Before(time.Now()) {
+		return nil, echo.NewHTTPError(
+			http.StatusForbidden,
+			errors.New(
+				"Password update request expired, please request again.",
+			),
+		)
+	}
+
+	user.Password, _ = utils.HashPassword(payload.NewPassword)
+	user.PasswordResetRequested = nil
+	auth.db.Save(&user)
+
+	return map[string]string{
+		"message": "User password has been successfully updated",
+	}, nil
+}
+
 func (auth *FirebaseAuthService) ResendOtp(
 	c echo.Context,
 	payload *requests.ResendOtpRequest,
@@ -281,6 +318,12 @@ func (auth *FirebaseAuthService) VerifyOtp(
 		return map[string]string{
 			"message": "User email successfully verified.",
 		}, nil
+	}
+
+	if user.PasswordResetRequested != nil {
+		expiry := time.Now().Add(time.Second * time.Duration(auth.appConfig.PasswordResetExpirySecs))
+		user.PasswordResetRequested = &expiry
+		auth.db.Save(&user)
 	}
 
 	return map[string]string{

@@ -116,6 +116,12 @@ func main() {
 	)
 
 	app.POST(
+		"/update-password",
+		authController.UpdatePassword,
+		middlewares.Validate(&requests.UpdatePasswordRequest{}),
+	)
+
+	app.POST(
 		"/resend-otp",
 		authController.ResendOtp,
 		middlewares.Validate(&requests.ResendOtpRequest{}),
