@@ -8,10 +8,9 @@ import (
 
 	"github.com/coocood/freecache"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
-func Throttle(db *gorm.DB, num_of_reqs uint, per_sec uint) echo.MiddlewareFunc {
+func Throttle(num_of_reqs uint, per_sec uint) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cache, ok := c.Get("cache").(*freecache.Cache)

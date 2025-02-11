@@ -95,7 +95,7 @@ func main() {
 		"/register",
 		authController.Register,
 		middlewares.Validate(&requests.RegisterRequest{}),
-		middlewares.Throttle(db, 4, 10),
+		middlewares.Throttle(4, 10),
 	)
 
 	app.POST(
