@@ -43,6 +43,7 @@ func initialMigration() (*gorm.DB, error) {
 		&models.PaymentMethod{},
 		&models.Bank{},
 		&models.Withdrawal{},
+		&models.Notification{},
 	); err != nil {
 		return nil, err
 	}
