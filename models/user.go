@@ -38,5 +38,6 @@ type User struct {
 	DeliveryAddresses		[]DeliveryAddress
 	PaymentMethods			[]PaymentMethod
 	Banks					[]Bank
+	FcmToken				*string
 	AllowNotifications		bool `gorm:"default:false"`
 }
