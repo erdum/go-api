@@ -123,6 +123,11 @@ func (auth *FirebaseAuthService) Login(
 		)
 	}
 
+	if payload.FcmToken != "" {
+		user.FcmToken = &payload.FcmToken
+		auth.db.Save(&user)
+	}
+
 	var userAvatar string
 	if user.Avatar != nil {
 	    userAvatar = *user.Avatar
