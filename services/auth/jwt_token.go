@@ -4,8 +4,6 @@ import (
 	"go-api/config"
 	"errors"
 	"time"
-	"reflect"
-	"fmt"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -53,9 +51,7 @@ func (j *JWTToken) ValidateToken(tokenString string) (
 	}
 
 	if claims, ok := token.Claims.(*TokenClaims); ok && token.Valid {
-		fmt.Println(reflect.TypeOf(claims))
-		// return claims.Token, nil
-		return nil, nil
+		return &claims.Token, nil
 	}
 
 	return nil, errors.New("Invalid token")
