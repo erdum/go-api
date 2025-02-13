@@ -6,24 +6,20 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type AuthController struct {
 	authService auth.AuthService
 	tokenService auth.TokenService
-	db *gorm.DB
 }
 
-func New(
+func NewAuthController(
 	authService auth.AuthService,
 	tokenService auth.TokenService,
-	db *gorm.DB,
 ) *AuthController {
 	return &AuthController{
 		authService: authService,
 		tokenService: tokenService,
-		db: db,
 	}
 }
 

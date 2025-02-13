@@ -1,5 +1,5 @@
 package requests
 
 type SignOnRequest struct {
-	IdToken string `json:"idToken" validate:"required"`
+	IdToken string `json:"id_token" validate:"required"`
 }
