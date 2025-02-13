@@ -15,6 +15,7 @@ type Config struct {
 		ProjectId   			string `split_words:"true"`
 		Credentials 			string
 	}
+	TokenExpirySecs				uint `default:"300" split_words:"true"`
 	PasswordResetExpirySecs		uint `default:"300" split_words:"true"`
 	Otp struct {
 		ExpirySecs				uint `default:"20" split_words:"true"`

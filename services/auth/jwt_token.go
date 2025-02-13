@@ -25,7 +25,9 @@ func (j *JWTToken) GenerateToken(tokenStruct Token) (string, error) {
 	claims := TokenClaims{
 		Token: tokenStruct,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(
+				time.Second * time.Duration(config.GetConfig().TokenExpirySecs),
+			)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
