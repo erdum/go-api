@@ -5,6 +5,7 @@ import (
 	"go-api/controllers"
 	"go-api/middlewares"
 	"go-api/models"
+	"go-api/services"
 	"go-api/services/auth"
 	"go-api/requests"
 	"go-api/utils"
@@ -81,10 +82,10 @@ func main() {
 		app.Logger.Fatal(err)
 	}
 
-	err = dbSeed(db, &models.User{})
-	if err != nil {
-		app.Logger.Fatal(err)
-	}
+	// err = dbSeed(db, &models.User{})
+	// if err != nil {
+	// 	app.Logger.Fatal(err)
+	// }
 
 	// HTTP Requests log file
 	err = utils.SetupHTTPRequestsLogger(app, "requests.log", "error.log")
@@ -95,14 +96,11 @@ func main() {
 	// Services
 	tokenService := auth.NewJWTToken()
 	authService := auth.NewFirebaseAuth(db, tokenService)
+	userService := services.NewUserService(db)
 
 	// Inject services into the controllers
-	authController := controllers.New(
-		authService,
-		tokenService,
-		db,
-	)
-	// userController := controllers.NewUserController(db)
+	authController := controllers.NewAuthController(authService, tokenService)
+	userController := controllers.NewUserController(userService)
 
 	// app.GET("/users", userController.GetAllUsers)
 	// app.POST("/users", userController.CreateUser)
@@ -154,9 +152,13 @@ func main() {
 	)
 
 	// Protected Routes (Require authentication)
-	// protectedRoutes := app.Group("")
-	// protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
-	// protectedRoutes.GET("/profile", authController.GetProfile)
+	protectedRoutes := app.Group("")
+	protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
+	protectedRoutes.POST(
+		"/profile",
+		userController.UpdateProfile,
+		middlewares.Validate(&requests.UpdateProfileRequest{}),
+	)
 
 	app.Logger.Fatal(app.Start(":" + appConfig.Port))
 }
