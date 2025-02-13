@@ -11,6 +11,6 @@ type Bank struct {
 	LastDigits			string `gorm:"not null"`
 	BankName			string `gorm:"not null"`
 	RoutingNumberf		string `gorm:"not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
 }

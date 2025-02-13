@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"github.com/go-faker/faker/v4"
 )
 
 func initialMigration() (*gorm.DB, error) {
@@ -51,6 +52,19 @@ func initialMigration() (*gorm.DB, error) {
 	return db, nil
 }
 
+func dbSeed(db *gorm.DB, models ...interface{}) error {
+	for _, model := range models {
+		err := faker.FakeData(model)
+		if err != nil {
+			return err
+		}
+
+		db.Save(model)
+    }
+
+    return nil
+}
+
 func main() {
 	app := echo.New()
 	app.Use(middleware.RequestID())
@@ -63,6 +77,11 @@ func main() {
 	}
 
 	db, err := initialMigration()
+	if err != nil {
+		app.Logger.Fatal(err)
+	}
+
+	err = dbSeed(db, &models.User{})
 	if err != nil {
 		app.Logger.Fatal(err)
 	}

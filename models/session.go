@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type SessionType string
@@ -15,7 +13,7 @@ const (
 )
 
 type Session struct {
-	gorm.Model
+	ID					uint
 	Title				string `gorm:"not null"`
 	Description			string `gorm:"not null"`
 	Activities			[]string `gorm:"serializer:json;not null"`
@@ -33,4 +31,6 @@ type Session struct {
 	Type				SessionType `gorm:'type:ENUM("public","private","custom");default:"public"'`
 	CoachID				uint `gorm:"index;not null"`
 	Coach				User `gorm:"foreignKey:CoachID"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

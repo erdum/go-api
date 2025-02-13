@@ -11,6 +11,6 @@ type PaymentMethod struct {
 	ExpiryMonth			string `gorm:"not null"`
 	ExpiryYear			string `gorm:"not null"`
 	Brand				string `gorm:"not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt 			time.Time
+	UpdatedAt 			time.Time
 }

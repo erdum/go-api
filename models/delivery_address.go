@@ -1,11 +1,11 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type DeliveryAddress struct {
-	gorm.Model
+	ID					uint
 	UserID				uint `gorm:"index;not null"`
 	User				User `gorm:"foreignKey:UserID"`
 	Country				string `gorm:"not null"`
@@ -15,4 +15,6 @@ type DeliveryAddress struct {
 	Address				string `gorm:"not null"`
 	Lat					float32 `gorm:"not null"`
 	Long				float32 `gorm:"not null"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

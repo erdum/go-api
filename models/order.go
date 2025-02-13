@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type OrderStatus string
@@ -23,7 +23,7 @@ const (
 )
 
 type Order struct {
-	gorm.Model
+	ID					uint
 	UserID				uint `gorm:"index;not null"`
 	User				User `gorm:"foreignKey:UserID"`
 	DeliveryAddressID	uint `gorm:"index;not null"`
@@ -34,4 +34,6 @@ type Order struct {
 	Status 				OrderStatus `gorm:'type:ENUM("inprogress","completed","canceled");default:"inprogress"'`
 	TrackingStatus		TrackingStatus `gorm:'type:ENUM("confirmed","inprogress","shipped","out for delivery","delivered");default:"inprogress"'`
 	TransactionID		string `gorm:"uniqueIndex;not null"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

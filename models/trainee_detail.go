@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type traineePreferences struct {
@@ -30,10 +30,12 @@ func getTraineePreferenceTypes() traineePreferences {
 }
 
 type TraineeDetail struct {
-	gorm.Model
+	ID					uint
 	UserID				uint `gorm:"uniqueIndex;not null"`
 	User				User `gorm:"foreignKey:UserID"`
 	FitnessGoal 		[]string `gorm:"serializer:json;not null"`
 	FitnessLevel 		[]string `gorm:"serializer:json;not null"`
 	ActivityChoice		[]string `gorm:"serializer:json;not null"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

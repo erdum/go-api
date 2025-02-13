@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Gender string
@@ -22,22 +20,25 @@ const (
 )
 
 type User struct {
-	gorm.Model
-	Name					string `gorm:"index;not null"`
-	Email 					string `gorm:"uniqueIndex;not null"`
-	PhoneNumber				string `gorm:"uniqueIndex;not null"`
+	ID						uint
+	Name					string `gorm:"index;not null" faker:"name"`
+	Email 					string `gorm:"uniqueIndex;not null" faker:"email"`
+	PhoneNumber				string `gorm:"uniqueIndex;not null" faker:"phone_number"`
 	Password				string `gorm:"not null"`
-	UID  					string `gorm:"not null"`
-	EmailVerifiedAt			*time.Time
-	PhoneNumberVerifiedAt	*time.Time
-	PasswordResetRequested	*time.Time
-	Avatar					*string
-	Gender 					Gender `gorm:'type:ENUM("male","female","other");default:"male"'`
-	Role 					Role `gorm:'type:ENUM("trainee","coach");default:"trainee"'`
-	Address 				UserAddress
-	DeliveryAddresses		[]DeliveryAddress
-	PaymentMethods			[]PaymentMethod
-	Banks					[]Bank
-	FcmToken				*string
-	AllowNotifications		bool `gorm:"default:false"`
+	UID  					string `gorm:"not null" faker:"uuid_digit"`
+	EmailVerifiedAt			*time.Time `faker:"-"`
+	PhoneNumberVerifiedAt	*time.Time `faker:"-"`
+	PasswordResetRequested	*time.Time `faker:"-"`
+	Avatar					*string `faker:"-"`
+	Gender 					Gender `gorm:'type:ENUM("male","female","other");default:"male"' faker:"-"`
+	Role 					Role `gorm:'type:ENUM("trainee","coach");default:"trainee"' faker:"-"`
+	Address 				UserAddress `faker:"-"`
+	DeliveryAddresses		[]DeliveryAddress `faker:"-"`
+	PaymentMethods			[]PaymentMethod `faker:"-"`
+	Banks					[]Bank `faker:"-"`
+	FcmToken				*string `faker:"-"`
+	AllowNotifications		bool `gorm:"default:false" faker:"-"`
+	CreatedAt				time.Time `faker:"-"`
+	UpdatedAt				time.Time `faker:"-"`
+	DeletedAt				*time.Time `faker:"-"`
 }

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type SessionReqStatus string
@@ -13,10 +13,12 @@ const (
 )
 
 type SessionRequest struct {
-	gorm.Model
+	ID					uint
 	SessionID			uint `gorm:"uniqueIndex:single_session_req;index;not null"`
 	Session				Session `gorm:"foreignKey:SessionID"`
 	UserID				uint `gorm:"uniqueIndex:single_session_req;index;not null"`
 	User				User `gorm:"foreignKey:UserID"`
 	Status 				SessionReqStatus `gorm:'type:ENUM("pending","accepted","rejected");default:"pending"'`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

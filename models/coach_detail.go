@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type CoachCertificate struct {
@@ -14,7 +12,7 @@ type CoachCertificate struct {
 }
 
 type CoachDetail struct {
-	gorm.Model
+	ID					uint
 	CoachID				uint `gorm:"uniqueIndex;not null"`
 	Coach				User `gorm:"foreignKey:CoachID"`
 	WalletBalance		float32 `gorm:"default:0;not null"`
@@ -26,4 +24,6 @@ type CoachDetail struct {
 	Certificates		[]CoachCertificate `gorm:"serializer:json;not null"`
 	MediaLinks			[]Media `gorm:"polymorphic:Model"`
 	Reviews				[]Review `gorm:"polymorphic:Model"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

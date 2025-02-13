@@ -1,12 +1,14 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type Media struct {
-	gorm.Model
+	ID					uint
 	URL					string
 	ModelID				uint
 	ModelType			string
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

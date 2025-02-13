@@ -1,11 +1,11 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type Product struct {
-	gorm.Model
+	ID					uint
 	CoachID				uint `gorm:"index;not null"`
 	Coach				User `gorm:"foreignKey:CoachID"`
 	Title				string `gorm:"not null"`
@@ -16,4 +16,6 @@ type Product struct {
 	Sizes				[]string `gorm:"serializer:json"`
 	Images				[]Media `gorm:"polymorphic:Model"`
 	Reviews				[]Review `gorm:"polymorphic:Model"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }

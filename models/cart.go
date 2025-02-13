@@ -1,12 +1,14 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type Cart struct {
-	gorm.Model
+	ID					uint
 	UserID				uint `gorm:"uniqueIndex;not null"`
 	User				User `gorm:"foreignKey:UserID"`
 	Products			[]Product `gorm:"many2many:cart_products"`
+	CreatedAt			time.Time
+	UpdatedAt			time.Time
 }
