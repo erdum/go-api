@@ -154,10 +154,16 @@ func main() {
 	// Protected Routes (Require authentication)
 	protectedRoutes := app.Group("")
 	protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
+
 	protectedRoutes.POST(
 		"/profile",
 		userController.UpdateProfile,
 		middlewares.Validate(&requests.UpdateProfileRequest{}),
+	)
+
+	protectedRoutes.GET(
+		"/profile",
+		userController.GetProfile,
 	)
 
 	app.Logger.Fatal(app.Start(":" + appConfig.Port))

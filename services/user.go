@@ -7,7 +7,7 @@ import (
 	// "go-api/utils"
 	// "net/http"
 	// "errors"
-	// "fmt"
+	"fmt"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -80,5 +80,31 @@ func (u *UserService) UpdateProfile(
 
 	return map[string]string{
 		"message": "User profile successfully updated.",
+	}, nil
+}
+
+func (u *UserService) GetProfile(c echo.Context) (map[string]string, error) {
+	user := c.Get("auth_user").(models.User)
+
+	var userAvatar string
+	if user.Avatar != nil {
+	    userAvatar = *user.Avatar
+	}
+
+	return map[string]string{
+		"user_id": fmt.Sprintf("%d", user.ID),
+		"user_uid": user.UID,
+		"name": user.Name,
+		"email": user.Email,
+		"avatar": userAvatar,
+		"phone_number": user.PhoneNumber,
+		"city": user.Address.City,
+		"state": user.Address.State,
+		"country": user.Address.Country,
+		"lat": fmt.Sprintf("%g", user.Address.Lat),
+		"long": fmt.Sprintf("%g", user.Address.Long),
+		"address": user.Address.Address,
+		"gender": fmt.Sprintf("%v", user.Gender),
+		"notification": fmt.Sprintf("%t", user.AllowNotifications),
 	}, nil
 }

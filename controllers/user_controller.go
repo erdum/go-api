@@ -26,3 +26,12 @@ func (uc *UserController) UpdateProfile(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 }
+
+func (uc *UserController) GetProfile(c echo.Context) error {
+	response, err := uc.userService.GetProfile(c)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
