@@ -35,3 +35,14 @@ func (uc *UserController) GetProfile(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 }
+
+func (uc *UserController) UpdateLocation(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.UpdateLocationRequest)
+
+	response, err := uc.userService.UpdateLocation(c, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}

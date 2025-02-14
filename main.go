@@ -155,15 +155,24 @@ func main() {
 	protectedRoutes := app.Group("")
 	protectedRoutes.Use(middlewares.Authenticate(tokenService, db))
 
+	// Update profile
 	protectedRoutes.POST(
 		"/profile",
 		userController.UpdateProfile,
 		middlewares.Validate(&requests.UpdateProfileRequest{}),
 	)
 
+	// Get profile
 	protectedRoutes.GET(
 		"/profile",
 		userController.GetProfile,
+	)
+
+	// Set user location
+	protectedRoutes.POST(
+		"/user/location",
+		userController.UpdateLocation,
+		middlewares.Validate(&requests.UpdateLocationRequest{}),
 	)
 
 	app.Logger.Fatal(app.Start(":" + appConfig.Port))

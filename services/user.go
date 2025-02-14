@@ -27,6 +27,30 @@ func NewUserService(
 	}
 }
 
+func (u *UserService) userResponse(user models.User) map[string]string {
+	var userAvatar string
+	if user.Avatar != nil {
+	    userAvatar = *user.Avatar
+	}
+
+	return map[string]string{
+		"id": fmt.Sprintf("%d", user.ID),
+		"uid": user.UID,
+		"name": user.Name,
+		"email": user.Email,
+		"avatar": userAvatar,
+		"phone_number": user.PhoneNumber,
+		"city": user.Address.City,
+		"state": user.Address.State,
+		"country": user.Address.Country,
+		"lat": fmt.Sprintf("%g", user.Address.Lat),
+		"long": fmt.Sprintf("%g", user.Address.Long),
+		"address": user.Address.Address,
+		"gender": fmt.Sprintf("%v", user.Gender),
+		"notification": fmt.Sprintf("%t", user.AllowNotifications),
+	}
+}
+
 func (u *UserService) UpdateProfile(
 	c echo.Context,
 	payload *requests.UpdateProfileRequest,
@@ -86,25 +110,22 @@ func (u *UserService) UpdateProfile(
 func (u *UserService) GetProfile(c echo.Context) (map[string]string, error) {
 	user := c.Get("auth_user").(models.User)
 
-	var userAvatar string
-	if user.Avatar != nil {
-	    userAvatar = *user.Avatar
-	}
+	return u.userResponse(user), nil
+}
 
-	return map[string]string{
-		"user_id": fmt.Sprintf("%d", user.ID),
-		"user_uid": user.UID,
-		"name": user.Name,
-		"email": user.Email,
-		"avatar": userAvatar,
-		"phone_number": user.PhoneNumber,
-		"city": user.Address.City,
-		"state": user.Address.State,
-		"country": user.Address.Country,
-		"lat": fmt.Sprintf("%g", user.Address.Lat),
-		"long": fmt.Sprintf("%g", user.Address.Long),
-		"address": user.Address.Address,
-		"gender": fmt.Sprintf("%v", user.Gender),
-		"notification": fmt.Sprintf("%t", user.AllowNotifications),
-	}, nil
+func (u *UserService) UpdateLocation(
+	c echo.Context,
+	payload *requests.UpdateLocationRequest,
+) (map[string]string, error) {
+	user := c.Get("auth_user").(models.User)
+
+	user.Address.Lat = payload.Lat
+	user.Address.Long = payload.Long
+	user.Address.Address = payload.Location
+	user.Address.City = payload.City
+	user.Address.State = payload.State
+
+	u.db.Save(&user)
+
+	return u.userResponse(user), nil
 }
