@@ -119,13 +119,15 @@ func (u *UserService) UpdateLocation(
 ) (map[string]string, error) {
 	user := c.Get("auth_user").(models.User)
 
-	user.Address.Lat = payload.Lat
-	user.Address.Long = payload.Long
-	user.Address.Address = payload.Location
-	user.Address.City = payload.City
-	user.Address.State = payload.State
-
-	u.db.Save(&user)
+	u.db.Model(&user.Address).Where("user_id = ?", user.ID).Updates(
+		map[string]interface{}{
+			"lat":     payload.Lat,
+			"long":    payload.Long,
+			"address": payload.Location,
+			"city":    payload.City,
+			"state":   payload.State,
+		},
+	)
 
 	return u.userResponse(user), nil
 }
