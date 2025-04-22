@@ -109,6 +109,13 @@ func main() {
 	// app.DELETE("/users/:id", userController.DeleteUser)
 
 	app.POST(
+		"/dev-login",
+		authController.DevLogin,
+		middlewares.Validate(&requests.DevLoginRequest{}),
+		middlewares.Throttle(4, 20),
+	)
+
+	app.POST(
 		"/register",
 		authController.Register,
 		middlewares.Validate(&requests.RegisterRequest{}),

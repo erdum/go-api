@@ -23,6 +23,17 @@ func NewAuthController(
 	}
 }
 
+func (ac *AuthController) DevLogin(c echo.Context) error {
+	payload := c.Get("valid_payload").(*requests.DevLoginRequest)
+
+	response, err := ac.authService.DevLogin(c, payload)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func (ac *AuthController) Register(c echo.Context) error {
 	payload := c.Get("valid_payload").(*requests.RegisterRequest)
 

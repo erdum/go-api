@@ -7,6 +7,10 @@ import (
 )
 
 type AuthService interface {
+	DevLogin(echo.Context, *requests.DevLoginRequest) (
+		map[string]string,
+		error,
+	)
 	Register(echo.Context, *requests.RegisterRequest) (map[string]string, error)
 	Login(echo.Context, *requests.LoginRequest) (map[string]string, error)
 	SignOn(echo.Context, *requests.SignOnRequest) (

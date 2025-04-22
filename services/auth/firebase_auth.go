@@ -35,6 +35,36 @@ func NewFirebaseAuth(
 	}
 }
 
+func (auth *FirebaseAuthService) DevLogin(
+	c echo.Context,
+	payload *requests.DevLoginRequest,
+) (map[string]string, error) {
+	fmt.Println(payload)
+
+	user := models.User{}
+	result := auth.db.First(&user, payload.Id)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, echo.NewHTTPError(
+			http.StatusBadRequest,
+			errors.New("User not found with the specified Id."),
+		)
+	}
+
+	token, err := auth.tokenService.GenerateToken(
+		Token{
+			EntityID: user.ID,
+			EntityType: fmt.Sprintf("%T", reflect.TypeOf(user)),
+		},
+	)
+
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	return map[string]string{"token": token}, nil
+}
+
 func (auth *FirebaseAuthService) Register(
 	c echo.Context,
 	payload *requests.RegisterRequest,
